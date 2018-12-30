@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/location"
+            android:icon="@drawable/placeholder"
+            android:title="Localização Atual" />
+        <item
+            android:id="@+id/route"
+            android:icon="@drawable/route"
+            android:title="Rotas" />
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/logout"
+            android:title="Sair" />
+    </group>
+
+</menu>
