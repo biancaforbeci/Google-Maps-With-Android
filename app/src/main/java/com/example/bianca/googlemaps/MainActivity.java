@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
@@ -29,15 +30,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -52,11 +44,6 @@ public class MainActivity extends AppCompatActivity
         TextView textViewUser = findViewById(R.id.userLogin);
 
         fragmentManager = getSupportFragmentManager();
-
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.add(R.id.container, new MapsFragment(), "MapsFragment");
-        transaction.commitAllowingStateLoss();
-
     }
 
     @Override
@@ -91,20 +78,30 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    private void showFragment(Fragment fragment,String name){
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.container, fragment, name);
+        transaction.commitAllowingStateLoss();
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
         int id = item.getItemId();
 
-        if (id == R.id.location) {
-           // Intent intent = new Intent(getApplicationContext())
-        } else if (id == R.id.route) {
-            Intent intent = new Intent(getApplicationContext(),RouteActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.logout) {
-            Intent i = new Intent(getApplicationContext(),LoginActivity.class);
-            startActivity(i);
+        switch (id) {
+            case R.id.location:
+                showFragment(new ExemploProviderFragmentV2GPS(),"ExemploProviderFragmentV2GPS");
+                break;
+            case R.id.route:
+                Intent intent = new Intent(getApplicationContext(), RouteActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.logout:
+                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(i);
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
