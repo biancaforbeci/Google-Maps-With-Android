@@ -13,6 +13,10 @@
             android:icon="@drawable/route"
             android:title="Rotas" />
         <item
+            android:id="@+id/traffic"
+            android:icon="@drawable/traffic"
+            android:title="Trânsito" />
+        <item
             android:id="@+id/logout"
             android:icon="@drawable/logout"
             android:title="Sair" />

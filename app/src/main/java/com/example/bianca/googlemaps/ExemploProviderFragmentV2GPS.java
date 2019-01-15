@@ -36,33 +36,14 @@ public class ExemploProviderFragmentV2GPS extends SupportMapFragment implements 
     private static final String TAG = "ExemploProvFragmentV1";
     private LocationManager locationManager;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getMapAsync(this);
-
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }else {
-            configurarServico();
-        }
+        configurarServico();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 1: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    configurarServico();
-                } else {
-                    Toast.makeText(getContext(), "Não vai funcionar!!!", Toast.LENGTH_LONG).show();
-                }
-                return;
-            }
-        }
-    }
     public void configurarServico(){
         try {
             LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -97,6 +78,7 @@ public class ExemploProviderFragmentV2GPS extends SupportMapFragment implements 
             mMap.setOnMapClickListener(this);
             mMap.getUiSettings().setZoomControlsEnabled(true);
             mMap.setMyLocationEnabled(true);
+            mMap.setTrafficEnabled(true);
 
         }catch (SecurityException ex){
             Log.e(TAG,"Error",ex);

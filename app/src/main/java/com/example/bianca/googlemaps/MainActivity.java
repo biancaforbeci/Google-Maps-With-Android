@@ -1,12 +1,16 @@
 package com.example.bianca.googlemaps;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,6 +26,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private FragmentManager fragmentManager;
+    private boolean request=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +44,27 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Intent i = new Intent();
-        String user = i.getStringExtra("Usuario");
-        TextView textViewUser = findViewById(R.id.userLogin);
-
         fragmentManager = getSupportFragmentManager();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    request=true;
+                } else {
+                    request=false;
+                }
+                return;
+            }
+        }
     }
 
     @Override
@@ -92,15 +113,24 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.location:
-                showFragment(new ExemploProviderFragmentV2GPS(),"ExemploProviderFragmentV2GPS");
-                break;
+                if(request) {
+                    showFragment(new ExemploProviderFragmentV1(), "ExemploProviderFragmentV1");
+                    break;
+                }else{
+                    AlertDialog build= new AlertDialog.Builder(this)
+                            .setTitle("Liberação do GPS")
+                            .setMessage("Liberação do GPS foi negada !")
+                            .setNeutralButton("OK",null)
+                            .show();
+                }
             case R.id.route:
-                Intent intent = new Intent(getApplicationContext(), RouteActivity.class);
+                Intent intent = new Intent(this,RouteActivity.class);
                 startActivity(intent);
+            case R.id.traffic:
+                showFragment(new ExemploProviderFragmentV2GPS(), "ExemploProviderFragmentV2GPS");
                 break;
             case R.id.logout:
-                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(i);
+                finishAffinity();
                 break;
         }
 
