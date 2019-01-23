@@ -2,26 +2,31 @@ package com.example.bianca.googlemaps;
 
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
+import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
@@ -74,9 +79,6 @@ public class ExemploProviderFragmentV1 extends SupportMapFragment implements OnM
             mMap.getUiSettings().setZoomControlsEnabled(true);
             mMap.setMyLocationEnabled(true);
 
-
-
-
         }catch (SecurityException ex){
             Log.e(TAG,"Error",ex);
         }
@@ -88,13 +90,71 @@ public class ExemploProviderFragmentV1 extends SupportMapFragment implements OnM
         markerOptions.title("Posição Atual");
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholder)); //alterando ícone.
 
-        mMap.addMarker(new MarkerOptions().position(locationCurrent).title("Posição Atual"));
+        Marker position= mMap.addMarker(markerOptions);
+        position.showInfoWindow(); // mostrar informações do marcador.
         mMap.moveCamera(CameraUpdateFactory.newLatLng(locationCurrent));
     }
 
     @Override
-    public void onMapClick(LatLng latLng) {
-        Toast.makeText(getContext(),"Coordenadas: " + latLng.toString(),Toast.LENGTH_SHORT).show();
+    public void onMapClick(final LatLng latLng) {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Deseja adicionar um marcador ?")
+                .setTitle("Adicionar marcador")
+                .setPositiveButton(android.R.string.yes,new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+                final AlertDialog alert = new AlertDialog.Builder(getActivity()).create();
+                final View v = View.inflate(getActivity(), R.layout.dialog_select_marker, null);
+
+                //show dialogs.
+                alert.setView(v);
+                alert.show();
+
+                ImageButton buttonMarker1 = v.findViewById(R.id.imgBtn1);
+                ImageButton buttonMarker2 = v.findViewById(R.id.imgBtn2);
+                ImageButton buttonMarker3 = v.findViewById(R.id.imgBtn3);
+                ImageButton buttonMarker4 = v.findViewById(R.id.imgBtn4);
+
+                buttonMarker1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        putMarker(latLng, v,1);
+                    }
+                });
+
+                buttonMarker2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        putMarker(latLng, v,2);
+                    }
+                });
+
+
+                buttonMarker3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        putMarker(latLng, v,3);
+                    }
+                });
+
+                buttonMarker4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        putMarker(latLng, v,4);
+                    }
+                });
+
+            }
+         })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+
     }
 
     @Override
@@ -115,5 +175,57 @@ public class ExemploProviderFragmentV1 extends SupportMapFragment implements OnM
     @Override
     public void onProviderDisabled(String s) {
 
+    }
+
+    private void putMarker(LatLng latLng, View v, int numMarker){
+        final BootstrapEditText editText = (BootstrapEditText) v.findViewById(R.id.edNameMarker);
+        BitmapDescriptor markerIcon = getBitmapDescriptor(numMarker);
+
+        if(editText.getText().toString().isEmpty()){
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("Preencha um título para o marcador !")
+                    .setTitle("Título vazio")
+                    .setNeutralButton("OK",null)
+                    .show();
+        }else{
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            markerOptions.title(editText.getText().toString());
+            markerOptions.icon(markerIcon);
+            Marker position = mMap.addMarker(markerOptions);
+        }
+    }
+
+    private BitmapDescriptor getMarkerIconFromDrawable(Drawable drawable) {
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+    private BitmapDescriptor getBitmapDescriptor(int numMarker){
+        BitmapDescriptor markerIcon = null;
+        Drawable marker;
+        switch (numMarker){
+            case 1:
+                marker = getResources().getDrawable(R.drawable.marcador);
+                markerIcon = getMarkerIconFromDrawable(marker);
+                return markerIcon;
+            case 2:
+                marker = getResources().getDrawable(R.drawable.pin);
+                markerIcon = getMarkerIconFromDrawable(marker);
+                return markerIcon;
+            case 3:
+                marker = getResources().getDrawable(R.drawable.favorite);
+                markerIcon = getMarkerIconFromDrawable(marker);
+                return markerIcon;
+            case 4:
+                marker = getResources().getDrawable(R.drawable.marker2);
+                markerIcon = getMarkerIconFromDrawable(marker);
+                return markerIcon;
+        }
+            return null;
     }
 }

@@ -24,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
@@ -79,6 +80,10 @@ public class ExemploProviderFragmentV2GPS extends SupportMapFragment implements 
             mMap.getUiSettings().setZoomControlsEnabled(true);
             mMap.setMyLocationEnabled(true);
             mMap.setTrafficEnabled(true);
+
+            LatLng Brazil = new LatLng(-14.235, -51.9253);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Brazil, 5));
+
 
         }catch (SecurityException ex){
             Log.e(TAG,"Error",ex);
