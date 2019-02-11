@@ -19,6 +19,8 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapEditText;
+import com.example.bianca.googlemaps.Database.MarkerDAO;
+import com.example.bianca.googlemaps.Database.MarkerMaps;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -28,6 +30,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +45,8 @@ public class ExemploProviderFragmentV1 extends SupportMapFragment implements OnM
     private static final String  TAG = "ExemploProvFragmentV1";
     private LocationManager locationManager;
     private Location location;
+    private boolean request;
+    private String text;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,6 +114,8 @@ public class ExemploProviderFragmentV1 extends SupportMapFragment implements OnM
 
                 final AlertDialog alert = new AlertDialog.Builder(getActivity()).create();
                 final View v = View.inflate(getActivity(), R.layout.dialog_select_marker, null);
+                final BootstrapEditText editText = (BootstrapEditText) v.findViewById(R.id.edNameMarker);
+                text = editText.getText().toString();
 
                 //show dialogs.
                 alert.setView(v);
@@ -155,6 +165,29 @@ public class ExemploProviderFragmentV1 extends SupportMapFragment implements OnM
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
 
+        }
+
+    private void saveDatabase(LatLng latLng, String text) {
+        try {
+            MarkerMaps markerMaps = new MarkerMaps();
+            markerMaps.setLatitude(latLng.latitude);
+            markerMaps.setLongitude(latLng.longitude);
+            markerMaps.setTitle(text);
+            markerMaps.setDate(timeNow());
+            new MarkerDAO().save(markerMaps);
+        }catch (Exception e){
+            Toast.makeText(getContext(),"Tente novamente !", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private String timeNow(){
+        SimpleDateFormat dateFormat_hora = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date data = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(data);
+        Date data_atual = cal.getTime();
+
+        return dateFormat_hora.format(data_atual);
     }
 
     @Override
@@ -188,11 +221,21 @@ public class ExemploProviderFragmentV1 extends SupportMapFragment implements OnM
                     .setNeutralButton("OK",null)
                     .show();
         }else{
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(latLng);
-            markerOptions.title(editText.getText().toString());
-            markerOptions.icon(markerIcon);
-            Marker position = mMap.addMarker(markerOptions);
+            if(markerIcon != null) {
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(latLng);
+                markerOptions.title(editText.getText().toString());
+                markerOptions.icon(markerIcon);
+                Marker position = mMap.addMarker(markerOptions);
+                text = editText.getText().toString();
+                request=true;
+            }else{
+                Toast.makeText(getContext(),"Nenhuma seleção de marcador",Toast.LENGTH_LONG).show();
+            }
+        }
+
+        if(request){
+            saveDatabase(latLng,text);
         }
     }
 
@@ -226,6 +269,6 @@ public class ExemploProviderFragmentV1 extends SupportMapFragment implements OnM
                 markerIcon = getMarkerIconFromDrawable(marker);
                 return markerIcon;
         }
-            return null;
+         return null;
     }
 }

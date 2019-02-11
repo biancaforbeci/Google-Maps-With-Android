@@ -9,6 +9,10 @@
             android:icon="@drawable/placeholder"
             android:title="Localização Atual" />
         <item
+            android:id="@+id/favorite"
+            android:icon="@drawable/list"
+            android:title="Lista de Marcadores" />
+        <item
             android:id="@+id/route"
             android:icon="@drawable/route"
             android:title="Rotas" />

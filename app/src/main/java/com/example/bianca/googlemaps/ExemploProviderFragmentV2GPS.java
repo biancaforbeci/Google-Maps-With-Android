@@ -43,6 +43,13 @@ public class ExemploProviderFragmentV2GPS extends SupportMapFragment implements 
         super.onCreate(savedInstanceState);
         getMapAsync(this);
         configurarServico();
+
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+        builder.setMessage("ZOOM")
+                .setTitle("Utilize os botões laterais para dar zoom e ver o trânsito atual na região que deseja.")
+                .setNeutralButton("OK",null)
+                .show();
+
     }
 
     public void configurarServico(){

@@ -43,9 +43,9 @@ public class MapsFragment extends SupportMapFragment implements OnMapReadyCallba
 
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(sydney);
-        markerOptions.title("Marker in Sydney");
+        markerOptions.title("MarkerMaps in Sydney");
 
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.addMarker(new MarkerOptions().position(sydney).title("MarkerMaps in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 

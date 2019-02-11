@@ -11,6 +11,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,11 +26,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.bianca.googlemaps.Database.Conection;
+import com.example.bianca.googlemaps.Database.MarkerDAO;
+
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private FragmentManager fragmentManager;
     private boolean request=true;
+    private RecyclerView rvMain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +53,10 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        new Conection(getApplicationContext(),
+                "markers.db",null,1);
+
 
         fragmentManager = getSupportFragmentManager();
 
@@ -116,13 +130,18 @@ public class MainActivity extends AppCompatActivity
                 if(request) {
                     showFragment(new ExemploProviderFragmentV1(), "ExemploProviderFragmentV1");
                     break;
-                }else{
-                    AlertDialog build= new AlertDialog.Builder(this)
+                }else {
+                    AlertDialog build = new AlertDialog.Builder(this)
                             .setTitle("Liberação do GPS")
                             .setMessage("Liberação do GPS foi negada !")
-                            .setNeutralButton("OK",null)
+                            .setNeutralButton("OK", null)
                             .show();
+                    break;
                 }
+            case R.id.favorite:
+                Intent intentMarker = new Intent(MainActivity.this,MarkersActivity.class);
+                startActivity(intentMarker);
+                break;
             case R.id.route:
                 Intent intent = new Intent(this,RouteActivity.class);
                 startActivity(intent);
