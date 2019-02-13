@@ -7,9 +7,18 @@ public class MarkerMaps {
     private Double longitude;
     private String title;
     private String date;
+    private Integer image;
 
     public Double getLatitude() {
         return latitude;
+    }
+
+    public Integer getImage() {
+        return image;
+    }
+
+    public void setImage(Integer image) {
+        this.image = image;
     }
 
     public void setLatitude(Double latitude) {

@@ -1,5 +1,8 @@
 package com.example.bianca.googlemaps;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -19,10 +22,9 @@ import java.util.Locale;
 public class LineAdapter extends RecyclerView.Adapter<LineHolder> {
 
     private final List<MarkerMaps> listMarkers;
+    private Context context;
 
-    public LineAdapter(ArrayList users) {
-        listMarkers = users;
-    }
+    public LineAdapter(ArrayList users) { listMarkers = users; }
 
     @Override
     public LineHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -39,6 +41,27 @@ public class LineAdapter extends RecyclerView.Adapter<LineHolder> {
                 removeItem(position);
             }
         });
+
+        switch (listMarkers.get(position).getImage()){
+
+            case 1:
+                holder.imageView.setImageResource(R.drawable.marcador);
+                break;
+
+            case 2:
+                holder.imageView.setImageResource(R.drawable.pin);
+                break;
+
+            case 3:
+                holder.imageView.setImageResource(R.drawable.favorite);
+                break;
+
+            case 4:
+                holder.imageView.setImageResource(R.drawable.marker2);
+                break;
+        }
+
+
     }
 
     @Override

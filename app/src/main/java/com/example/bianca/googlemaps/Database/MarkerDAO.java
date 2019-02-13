@@ -16,6 +16,7 @@ public class MarkerDAO {
         values.put("longitude", markerMaps.getLongitude());
         values.put("title", markerMaps.getTitle());
         values.put("date",markerMaps.getDate());
+        values.put("image",markerMaps.getImage());
 
         if(markerMaps.getId()==null){
             conn.insert("markers",null,values);
@@ -28,7 +29,7 @@ public class MarkerDAO {
 
     public ArrayList<MarkerMaps> list(){
         SQLiteDatabase conn = Conection.getInstance().getReadableDatabase();
-        Cursor c = conn.query("markers", new String[]{"id","latitude","longitude","title","date"},null,null,null,null,"title");
+        Cursor c = conn.query("markers", new String[]{"id","latitude","longitude","title","date","image"},null,null,null,null,"title");
         ArrayList<MarkerMaps> listMarkerMaps = new ArrayList<MarkerMaps>();
         if(c.moveToFirst()){ //move to first
             do{
@@ -38,6 +39,7 @@ public class MarkerDAO {
                 markerMaps.setLongitude(c.getDouble(2));
                 markerMaps.setTitle(c.getString(3));
                 markerMaps.setDate(c.getString(4));
+                markerMaps.setImage(c.getInt(5));
                 listMarkerMaps.add(markerMaps);
             }while(c.moveToNext());
         }

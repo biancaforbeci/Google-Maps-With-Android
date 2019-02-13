@@ -167,13 +167,14 @@ public class ExemploProviderFragmentV1 extends SupportMapFragment implements OnM
 
         }
 
-    private void saveDatabase(LatLng latLng, String text) {
+    private void saveDatabase(LatLng latLng, String text, int num) {
         try {
             MarkerMaps markerMaps = new MarkerMaps();
             markerMaps.setLatitude(latLng.latitude);
             markerMaps.setLongitude(latLng.longitude);
             markerMaps.setTitle(text);
             markerMaps.setDate(timeNow());
+            markerMaps.setImage(num);
             new MarkerDAO().save(markerMaps);
         }catch (Exception e){
             Toast.makeText(getContext(),"Tente novamente !", Toast.LENGTH_LONG).show();
@@ -235,7 +236,7 @@ public class ExemploProviderFragmentV1 extends SupportMapFragment implements OnM
         }
 
         if(request){
-            saveDatabase(latLng,text);
+            saveDatabase(latLng,text,numMarker);
         }
     }
 

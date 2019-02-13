@@ -24,7 +24,8 @@ public class Conection extends SQLiteOpenHelper {
                 "latitude double,"+
                 "longitude double,"+
                 "title varchar(300),"+
-                "date Text"+
+                "date Text,"+
+                "image integer"+
                 ")";
 
         sqLiteDatabase.execSQL(statement);
